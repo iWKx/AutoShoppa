@@ -30,8 +30,9 @@ info_plus_x = config["info_plus_x"]
 info_plus_y = config["info_plus_y"]
 
 pyautogui.PAUSE = pause_autogui
-background_color = "#2a2f32"
+background_color = "#2b2e33"
 root_font = "Roboto"
+bilde_status = "nei"
 
 def Open_txt():
     global file_path, text_widget, root1, root  
@@ -103,42 +104,42 @@ def main():
 
     else:
         time.sleep(delay_start)
+        if maler_button is not None:
+            pyautogui.click(maler_button)
+        else:
+            pyautogui.click(26,57)
+
+        pyautogui.click(80,95)
+        if bilde_status == "ja":
+            pyautogui.typewrite("pris og bilde")
+        elif bilde_status == "nei":
+            pyautogui.typewrite("uten bilde")
+        time.sleep(delay_start)
+        pyautogui.click(90,150)
+        time.sleep(delay_start)
+        pyautogui.moveTo(100,777)
+        if selected_value==options[0]:
+            pyautogui.scroll(-5000)
+            pyautogui.click(110,933)
+        elif selected_value == options[1]:
+            pyautogui.scroll(-5000)    
+            pyautogui.click(111,861)
+        elif selected_value == options[2]:
+            pyautogui.scroll(-5000)
+            pyautogui.click(106,791)
+        elif selected_value == options[3]:
+            pyautogui.scroll(5000)
+            pyautogui.click(107,805)
+        elif selected_value == options[4]:
+            pyautogui.scroll(5000)
+            pyautogui.click(104,601)
+        elif selected_value == options[5]:
+            pyautogui.scroll(5000)
+            pyautogui.click(99,812)   
+        time.sleep(delay_start)
         with open(file_path, 'r') as file:
             for line in file:
                 if line.strip():
-                    
-                    if maler_button is not None:
-                        pyautogui.click(maler_button)
-                    else:
-                        pyautogui.click(26,57)
-
-                    pyautogui.click(80,95)
-                    if bilde == "ja":
-                        pyautogui.typewrite("pris og bilde")
-                    elif bilde == "nei":
-                        pyautogui.typewrite("uten bilde")
-                    pyautogui.click(90,150)
-                    time.sleep(delay_start)
-                    pyautogui.moveTo(100,777)
-                    if selected_value==options[0]:
-                        pyautogui.scroll(-5000)
-                        pyautogui.click(110,933)
-                    elif selected_value == options[1]:
-                        pyautogui.scroll(-5000)    
-                        pyautogui.click(111,861)
-                    elif selected_value == options[2]:
-                        pyautogui.scroll(-5000)
-                        pyautogui.click(106,791)
-                    elif selected_value == options[3]:
-                        pyautogui.scroll(5000)
-                        pyautogui.click(107,861)
-                    elif selected_value == options[4]:
-                        pyautogui.scroll(5000)
-                        pyautogui.click(104,601)
-                    elif selected_value == options[5]:
-                        pyautogui.scroll(5000)
-                        pyautogui.click(99,812)   
-                    time.sleep(delay_start)
                     search_bar = pyautogui.locateOnScreen(search_bar_path)
                     if search_bar is not None:
                         center_x = search_bar.left + (search_bar.width / 2)
@@ -262,12 +263,15 @@ def on_combobox_select(event):
     print(selected_value)
 
 def update_checkbox_label():
+    global bilde_status
     if checkbox_var.get():
         bilde.set("ja")
         checkbox_label.config(text="Med bilde", fg="white")
+        bilde_status = "ja"
     else:
         bilde.set("nei")
-        checkbox_label.config(text="Uten bilde", fg="#d6d6d6")
+        checkbox_label.config(text="Uten bilde", fg="white")
+        bilde_status = "nei"
 
 def open_config_app():
     try:
@@ -290,7 +294,6 @@ root.iconbitmap(ico_path)
 root.configure(bg = background_color)
 root.attributes("-alpha", 0.98)
 root.resizable(False,True)
-#root.protocol("WM_DELETE_WINDOW", on_closing)
 
 button_style = {
     "font": (root_font, 10,"bold"),  
@@ -311,7 +314,7 @@ label_style = {
 button1_var = tk.BooleanVar()
 button2_var = tk.BooleanVar()
 
-open_insx = tk.Label(root,bg=background_color, font=(root_font, 7))
+open_insx = tk.Label(root,bg=background_color, font=(root_font, 8))
 if have_common_word(target_program_title, power_butikk):
     open_insx.configure(text="✔️", fg= "green")
 else:
@@ -320,7 +323,7 @@ open_insx.pack(pady=0, anchor="nw", padx=2)
 open_insx.bind("<Button-1>", lambda event: open_config_app())
 
 logo_image = Image.open(logo_path)
-logo_image = logo_image.resize((260, 75))
+logo_image = logo_image.resize((250, 75))
 logo_photo = ImageTk.PhotoImage(logo_image)
 logo_label = tk.Label(root, image=logo_photo, bg=background_color)
 logo_label.image = logo_photo  
@@ -328,14 +331,9 @@ logo_label.pack(pady = 0)
 
 auto_shoppa = tk.Label(root, text="Auto Shoppa", fg= "white",
      bg=background_color, font=("arial", 9,"bold italic"),)
-auto_shoppa.pack(side="top", pady=(0,25))
+auto_shoppa.pack(side="top", pady=(0,45))
 auto_shoppa.bind("<Enter>",on_enter2)
 auto_shoppa.bind("<Leave>",on_leave2)
-
-
-#open_ins = tk.Label(root, text="Sørg for at du har valgt riktig mal i Shoppa!",
-#                     fg= "white", **label_style).pack(pady=10)
-
 
 open_button = tk.Checkbutton(root, text="Open",variable=button1_var,
                              state=tk.NORMAL, command=Open_txt, **button_style)
@@ -363,11 +361,11 @@ checkbox_var.set(False)
 checkbox = tk.Checkbutton(frame_mal, variable=checkbox_var,bg="#373d41", command=update_checkbox_label)
 checkbox.grid(row=0, column=1, padx=0,pady=5)
 
-checkbox_label = tk.Label(frame_mal, text="Uten bilde", fg="#d6d6d6", bg="#373d41")
+checkbox_label = tk.Label(frame_mal, text="Uten bilde", fg="white", bg="#373d41")
 checkbox_label.grid(row=0, column=2, padx=0)
 
 bilde = tk.StringVar()
-bilde.set("ja")
+bilde.set("nei")
 
 custom_style = ttk.Style()
 custom_style.theme_use('alt')
@@ -381,7 +379,7 @@ custom_style.configure("Custom.TCombobox",
 
 options = ["Piggetikett", "Hyllekant", "Stor hyllekant", "Halv A4", "Stående A4", "Liggende A4"]
 selected_option = tk.StringVar()
-select_box = ttk.Combobox(frame_mal, textvariable=selected_option, values=options, state="readonly", style="Custom.TCombobox")
+select_box = ttk.Combobox(frame_mal, textvariable=selected_option, values=options, state="readonly",width=10, style="Custom.TCombobox")
 select_box.grid(row=0, column=3, padx=5)
 select_box.set(options[0])
 selected_value=select_box.get()

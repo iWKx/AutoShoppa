@@ -2,7 +2,6 @@
 import tkinter as tk
 import pygetwindow as gw
 import json
-import subprocess
 from PIL import Image, ImageTk
 
 # File paths
@@ -81,16 +80,8 @@ def save_config():
     data.update(existing_config)
     with open(json_path, 'w') as config_file:
         json.dump(data, config_file, indent=2)
+    con.destroy()
 
-    open_main_app()
-
-def open_main_app():
-    try:
-        subprocess.Popen(["AutoShoppa.exe"])
-        con.destroy()
-    except FileNotFoundError:
-        print("AutoShoppa application not found")
-        con.destroy()
 
 def on_enter(event):
     widget = event.widget
@@ -99,7 +90,16 @@ def on_enter(event):
 
 def on_leave(event):
     widget = event.widget
-    widget.configure(background="#FF9100")
+    widget.configure(background="#f15c25")
+
+def on_enter2(event):
+    widget = event.widget
+    if widget['state'] == tk.NORMAL:
+        widget.configure(fg="#f15c25")
+
+def on_leave2(event):
+    widget = event.widget
+    widget.configure(fg="white")
 
 def center_window(window, width, height):
     screen_width = window.winfo_screenwidth()
@@ -117,27 +117,30 @@ con.attributes("-alpha", 0.98)
 window_width = window_x
 window_height = window_y
 center_window(con, window_width, window_height)
-con.resizable(False, False)
+con.resizable(False, True)
 
 existing_config = load_config()
 get_active_window_titles()
 
 # Create the logo image and label
 logo_image = Image.open(con_logo_path)
-logo_image = logo_image.resize((320, 100))
+logo_image = logo_image.resize((350, 100))
 logo_photo = ImageTk.PhotoImage(logo_image)
 logo_label = tk.Label(con, image=logo_photo, bg="#2b2e33")
 logo_label.image = logo_photo
-logo_label.pack(pady=(0, 0))
+logo_label.pack(pady=(10, 0))
 
 
 # Create widgets and buttons
 intro_felt = tk.Label(con, text="Config", fg="white", bg="#2b2e33", font=("Roboto", 10, "bold italic"))
 intro_felt.pack(pady=(0, 10))
+intro_felt.bind("<Enter>", on_enter2)
+intro_felt.bind("<Leave>", on_leave2)
+
 
 window_list = tk.Listbox(con, selectmode=tk.SINGLE, height=2)
-window_list.configure(bg="#2b2e33", fg="white", highlightcolor="#FF9100", highlightbackground="#f7b154",
-                     selectbackground="#FF9100", selectforeground="black", font=("Verdana", 10))
+window_list.configure(bg="#2b2e33", fg="white", highlightcolor="#f15c25", highlightbackground="#f7b154",
+                     selectbackground="#f15c25", selectforeground="black", font=("Verdana", 10))
 window_list.pack(padx=55, pady=(10, 10),ipady=5, fill=tk.BOTH, expand=False)
 window_list.configure(highlightthickness=1, borderwidth=1, relief=tk.RIDGE)
 
@@ -145,7 +148,7 @@ button_frame = tk.Frame(con, bg="#2b2e33")
 button_frame.pack()
 
 copy_button = tk.Button(button_frame, text="Select", command=on_select_button_click)
-copy_button.configure(cursor="hand2", fg="white", bg="#FF9100", font=("Verdana", 10), width=10, relief=tk.RAISED, borderwidth=0)
+copy_button.configure(cursor="hand2", fg="white", bg="#f15c25", font=("Verdana", 10), width=10, relief=tk.RAISED, borderwidth=0)
 copy_button.pack(side=tk.LEFT, padx=5, pady=5, fill=tk.X, expand=True)
 
 refresh_button = tk.Button(button_frame, text="Refresh", command=refresh_window_list)
@@ -158,14 +161,14 @@ tk.Label(con, text="Target Program Title:", fg="white", bg="#2b2e33", font=("Ver
 target_program_title_entry = tk.Entry(con)
 target_program_title_entry.config(fg="#03fc98", font=("Verdana", 9), width=45, justify="center", bg="#202226")
 target_program_title_entry.pack(pady=(5, 15),ipady=10)
-target_program_title_entry.configure(highlightthickness=1, borderwidth=1, relief=tk.RIDGE, highlightcolor="#FF9100")
+target_program_title_entry.configure(highlightthickness=1, borderwidth=1, relief=tk.RIDGE, highlightcolor="#f15c25")
 
 tk.Label(con, text="Power Butikk:", fg="white", bg="#2b2e33", font=("Verdana", 10)).pack(pady=(5, 0))
 power_butikk_entry = tk.Entry(con)
 power_butikk_entry.insert(0, existing_config.get("power_butikk", ""))
-power_butikk_entry.config(justify="center", fg="#FF9100", bg="#202226", font=("Verdana", 11), width=22)
+power_butikk_entry.config(justify="center", fg="#f15c25", bg="#202226", font=("Verdana", 11), width=22)
 power_butikk_entry.pack(pady=(5,15),ipady=7)
-power_butikk_entry.configure(highlightthickness=1, borderwidth=1, relief=tk.RIDGE, highlightcolor="#FF9100", highlightbackground="#18191c")
+power_butikk_entry.configure(highlightthickness=1, borderwidth=1, relief=tk.RIDGE, highlightcolor="#f15c25", highlightbackground="#18191c")
 
 delay_frame = tk.Frame(con, bg="#2b2e33")
 delay_frame.pack()
@@ -173,25 +176,27 @@ delay_frame.pack()
 tk.Label(delay_frame, text="Delay Start:", fg="white", bg="#2b2e33", font=("Verdana", 10)).grid(row=0, column=0, padx=5, pady=(5, 0), sticky="w")
 delay_start_entry = tk.Entry(delay_frame)
 delay_start_entry.insert(0, existing_config.get("delay_start", ""))
-delay_start_entry.config(justify="center", fg="#FF9100", bg="#202226", font=("Verdana", 11), width=5)
+delay_start_entry.config(justify="center", fg="#f15c25", bg="#202226", font=("Verdana", 11), width=5)
 delay_start_entry.grid(row=1, column=0, padx=5, pady=(5, 15),ipady=3)
-delay_start_entry.configure(highlightthickness=1, borderwidth=1, relief=tk.RIDGE, highlightcolor="#FF9100", highlightbackground="#18191c")
+delay_start_entry.configure(highlightthickness=1, borderwidth=1, relief=tk.RIDGE, highlightcolor="#f15c25", highlightbackground="#18191c")
 
 tk.Label(delay_frame, text="Delay:", fg="white", bg="#2b2e33", font=("Verdana", 10)).grid(row=0, column=1, padx=5, pady=(5, 0), sticky="w")
 delay_autogui_entry = tk.Entry(delay_frame)
 delay_autogui_entry.insert(0, existing_config.get("pause_autogui", ""))
-delay_autogui_entry.config(justify="center", fg="#FF9100", bg="#202226", font=("Verdana", 11), width=5, highlightcolor="#FF9100")
+delay_autogui_entry.config(justify="center", fg="#f15c25", bg="#202226", font=("Verdana", 11), width=5, highlightcolor="#f15c25")
 delay_autogui_entry.grid(row=1, column=1, padx=5, pady=(5, 15),ipady=3)
-delay_autogui_entry.configure(highlightthickness=1, borderwidth=1, relief=tk.RIDGE, highlightcolor="#FF9100", highlightbackground="#18191c")
+delay_autogui_entry.configure(highlightthickness=1, borderwidth=1, relief=tk.RIDGE, highlightcolor="#f15c25", highlightbackground="#18191c")
 
-submit_button = tk.Button(con, text="Save Config", bg="#FF9100", fg="#2b2e33", font="Verdana", cursor="hand2", command=save_config, relief=tk.FLAT, borderwidth=2, width=20, height=2)
+submit_button = tk.Button(con, text="Save Config", bg="#f15c25", fg="black", font="Verdana", cursor="hand2", command=save_config, relief=tk.FLAT, borderwidth=2, width=20, height=2)
 submit_button.pack(pady=15)
 submit_button.bind("<Enter>", on_enter)
 submit_button.bind("<Leave>", on_leave)
 
 signature_label = tk.Label(con, text="Made with 🖤 by Wael for Power")
-signature_label.configure(cursor="heart", bg="#2b2e33", fg="#ff9100", font=("Verdana", 10))
+signature_label.configure(cursor="heart", bg="#2b2e33", fg="white", font=("Verdana", 10))
 signature_label.pack(side="bottom", pady=(5, 5))
+signature_label.bind("<Enter>", on_enter2)
+signature_label.bind("<Leave>", on_leave2)
 
 auto_select_shoppa_window()
 
