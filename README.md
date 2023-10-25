@@ -1,8 +1,6 @@
 # AutoShoppa
 Automation for Shoppa using Pyautogui
 
-Link to download the AutoShoppa application (https://bit.ly/Auto-Shoppa) - (expire date for the link 22/11/2023)
-
 First Look!
 
 ![first_look](https://github.com/iWKx/AutoShoppa/assets/97713241/f8621b3b-1841-460a-80e0-bb79c365f653)
